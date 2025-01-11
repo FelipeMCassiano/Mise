@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+    mysql:
+        image: mysql:latest
+        hostname: mysql
+        environment:
+            MYSQL_DATABASE: DB
+            MYSQL_USER: USER
+            MYSQL_ROOT_PASSWORD: ROOT
+            MYSQL_PASSWORD: PASS
+        restart: "no"
+        ports:
+            - "3306:3306"
+        deploy:
+            resources:
+                limits:
+                    cpus: "1"
+                    memory: "500MB"
