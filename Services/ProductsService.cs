@@ -79,4 +79,10 @@ public class ProductsService
         return products;
 
     }
+    public async Task<List<ProductDetailsDto>> GetAllProductsAsync()
+    {
+        return await _dbContext.Products.Select(p => p.ToDetailsDto()).ToListAsync();
+
+    }
 }
+

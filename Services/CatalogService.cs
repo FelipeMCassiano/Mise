@@ -48,4 +48,6 @@ public class CatalogService
 
     public async Task<OneOf<List<ProductDto>, NotFoundProductError>> GetProductsByTagAsync(string[] tags) => await _productsService.GetProductsByTags(tags);
 
+    public async Task<List<ProductDetailsDto>> GetAllProductsAsync() => await _productsService.GetAllProductsAsync();
+
 }

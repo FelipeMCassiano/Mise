@@ -51,5 +51,23 @@ public class TagsService
 
     }
 
+    public async Task<AlreadyExistingTagsError?> CreateMultpleTagsAsync(List<string> names)
+    {
+
+        var existingTags = await _dbContext.Tags.Where(t => names.Contains(t.Name)).ToListAsync();
+        var existingTagNames = existingTags.Select(t => t.Name).ToHashSet();
+        var missingTagNames = names.Except(existingTagNames).ToList();
+
+        if (!missingTagNames.Any())
+        {
+            return new AlreadyExistingTagsError();
+        }
+
+
+        await _dbContext.AddRangeAsync(missingTagNames.Select(t => new Tag() { Id = Guid.NewGuid(), Name = t }));
+
+        return null;
+    }
+
 
 }

@@ -36,6 +36,15 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
+    [Route("")]
+    public async Task<IActionResult> GetAllProducts()
+    {
+        var result = await _catalogService.GetAllProductsAsync();
+
+        return Ok(result);
+    }
+
+    [HttpGet]
     [Route("{id}")]
     public async Task<IActionResult> GetProduct(Guid id)
     {
@@ -51,7 +60,7 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    [Route("")]
+    [Route("tags")]
     public async Task<IActionResult> GetProductByTags([FromQuery] string[] tags)
     {
         var result = await _catalogService.GetProductsByTagAsync(tags);

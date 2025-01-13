@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Mise.Database;
+using Mise.Entities;
 using Mise.Errors;
 using Mise.Services;
 
@@ -21,6 +23,9 @@ builder.Services.AddScoped<ProductsService>();
 builder.Services.AddScoped<TagsService>();
 builder.Services.AddScoped<CatalogService>();
 builder.Services.AddScoped<IErrorHandler, ErrorHandler>();
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
 var app = builder.Build();
 
@@ -33,6 +38,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

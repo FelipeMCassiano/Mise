@@ -5,6 +5,7 @@ public enum ErrorType
     NotFoundProduct,
     ServerError,
     CreateProductError,
-    NotFoundTag
+    NotFoundTag,
+    AlreadyExistingTags
 
 }

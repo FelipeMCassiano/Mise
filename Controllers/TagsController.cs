@@ -21,6 +21,7 @@ public class TagsController : ControllerBase
     {
         var tags = await _catalogService.GetAllTagsAsync();
 
+
         return Ok(tags);
     }
 

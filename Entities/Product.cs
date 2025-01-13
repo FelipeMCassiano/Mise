@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Components.Forms;
 
 namespace Mise.Entities;
 
@@ -11,6 +12,8 @@ public class Product
     [Range(0, double.PositiveInfinity)]
     public decimal Price { get; set; }
     public List<Tag> Tags { get; set; } = [];
+    public int UserId { get; init; }
+    public ApplicationUser User { get; init; } = null!;
 
 }
 
