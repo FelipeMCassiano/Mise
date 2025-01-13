@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Mise")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+21d49b6c1236ec8ff2884b2e5d5dc07e2fc03d0a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b329e468b26b75eeb41cadae715de41ae26b3ba3")]
 [assembly: System.Reflection.AssemblyProductAttribute("Mise")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Mise")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

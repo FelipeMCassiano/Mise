@@ -23,6 +23,21 @@ public class TagsController : ControllerBase
 
         return Ok(tags);
     }
+
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<IActionResult> GetTagById(Guid id)
+    {
+        var result = await _catalogService.GetTagByIdAsync(id);
+        if (result.IsT1)
+        {
+            return NotFound(result.AsT1);
+        }
+
+        var tag = result.AsT0;
+
+        return Ok(tag);
+    }
 }
 
 

@@ -17,8 +17,21 @@ public class CatalogService
 
     public async Task<OneOf<ProductDto, Error>> CreateProductWithTags(CreateProductDto createProductDto)
     {
-        var tags = await _tagsService.GetOrCreateMultipleTagByNameAsync(createProductDto.TagsNames);
-        var product = await _productsService.CreateProduct(createProductDto, tags);
+        var resultTags = await _tagsService.GetMultipleTagsByNameAsync(createProductDto.TagsNames);
+        if (resultTags.IsT1)
+        {
+            var err = resultTags.AsT1;
+
+            return err;
+        }
+        var resultProduct = await _productsService.CreateProduct(createProductDto, resultTags.AsT0);
+        if (resultProduct.IsT1)
+        {
+            var err = resultProduct.AsT1;
+
+            return err;
+        }
+        var product = resultProduct.AsT0;
 
         return product;
     }
@@ -29,5 +42,10 @@ public class CatalogService
     }
 
     public async Task<List<Tag>> GetAllTagsAsync() => await _tagsService.GetAllTagsAsync();
+
+    public async Task<OneOf<Tag, NotFoundTagError>> GetTagByIdAsync(Guid id) => await _tagsService.GetTagAsync(id);
+
+
+    public async Task<OneOf<List<ProductDto>, NotFoundProductError>> GetProductsByTagAsync(string[] tags) => await _productsService.GetProductsByTags(tags);
 
 }

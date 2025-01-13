@@ -16,7 +16,7 @@ public class TagsService
 
     }
 
-    public async Task<List<Tag>> GetOrCreateMultipleTagByNameAsync(List<string> names)
+    public async Task<OneOf<List<Tag>, NotFoundMultipleTagsError>> GetMultipleTagsByNameAsync(List<string> names)
     {
         var existingTags = await _dbContext.Tags.Where(t => names.Contains(t.Name)).ToListAsync();
 
@@ -25,10 +25,9 @@ public class TagsService
 
         if (missingTagNames.Any())
         {
-            var newTags = missingTagNames.Select(name => new Tag { Name = name, Id = Guid.NewGuid() }).ToList();
-            await _dbContext.Tags.AddRangeAsync(newTags);
-            await _dbContext.SaveChangesAsync();
-            existingTags.AddRange(newTags);
+            var err = new NotFoundMultipleTagsError(missingTagNames);
+
+            return err;
         }
 
         return existingTags;
@@ -37,6 +36,19 @@ public class TagsService
     public async Task<List<Tag>> GetAllTagsAsync()
     {
         return await _dbContext.Tags.Select(t => t).ToListAsync();
+    }
+
+    public async Task<OneOf<Tag, NotFoundTagError>> GetTagAsync(Guid id)
+    {
+
+        var tag = await _dbContext.Tags.FindAsync(id);
+        if (tag is null)
+        {
+            return new NotFoundTagError();
+        }
+
+        return tag;
+
     }
 
 

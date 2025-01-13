@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Mise.Database;
+using Mise.Errors;
 using Mise.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connStri
 builder.Services.AddScoped<ProductsService>();
 builder.Services.AddScoped<TagsService>();
 builder.Services.AddScoped<CatalogService>();
+builder.Services.AddScoped<IErrorHandler, ErrorHandler>();
 
 var app = builder.Build();
 

@@ -9,10 +9,12 @@ namespace Mise.Controllers;
 public class ProductsController : ControllerBase
 {
     private readonly CatalogService _catalogService;
+    private readonly IErrorHandler _errorHandler;
 
-    public ProductsController(CatalogService catalogService)
+    public ProductsController(CatalogService catalogService, IErrorHandler errorHandler)
     {
         _catalogService = catalogService;
+        _errorHandler = errorHandler;
     }
 
     [HttpPost]
@@ -25,8 +27,7 @@ public class ProductsController : ControllerBase
         {
             var err = result.AsT1;
 
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                new { status = "error", message = err.Message, errorType = err.ErrorType.ToString() });
+            return _errorHandler.Handle(err);
         }
 
         var product = result.AsT0;
@@ -43,8 +44,17 @@ public class ProductsController : ControllerBase
         if (result.IsT1)
         {
             var err = result.AsT1;
-            return NotFound(new { status = "error", message = err.Message, errorType = err.ErrorType.ToString() });
+            return _errorHandler.Handle(err);
         }
+
+        return Ok(result.AsT0);
+    }
+
+    [HttpGet]
+    [Route("")]
+    public async Task<IActionResult> GetProductByTags([FromQuery] string[] tags)
+    {
+        var result = await _catalogService.GetProductsByTagAsync(tags);
 
         return Ok(result.AsT0);
     }
