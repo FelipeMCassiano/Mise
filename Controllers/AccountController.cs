@@ -1,17 +1,19 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.DataProtection.KeyManagement.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Mise.Entities;
 namespace Mise.Controllers;
 
 [Route("api/account")]
 [ApiController]
 public class AccountController : ControllerBase
 {
-    private readonly SignInManager<IdentityUser> _signInManager;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public AccountController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+    public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
     {
         _signInManager = signInManager;
         _userManager = userManager;
@@ -22,7 +24,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> RegisterUser([FromBody] RegisterUserDto registerUser)
     {
 
-        var user = new IdentityUser()
+        var user = new ApplicationUser()
         {
             UserName = registerUser.Username,
             Email = registerUser.EmailAddress,
@@ -51,12 +53,13 @@ public class AccountController : ControllerBase
             return NotFound($"Unable to load user with email '{loginUser.EmailAddress}'.");
         }
 
-        var signInResult = await _signInManager.PasswordSignInAsync(user, loginUser.Password, false, false);
-        if (!signInResult.Succeeded)
+        var isValid = await _signInManager.UserManager.CheckPasswordAsync(user, loginUser.Password);
+        if (!isValid)
         {
             return Unauthorized();
-
         }
+
+        await _signInManager.SignInAsync(user, loginUser.RememberMe, null);
 
         return Redirect("/api/products");
     }
@@ -69,5 +72,6 @@ public class AccountController : ControllerBase
         await _signInManager.SignOutAsync();
         return Redirect("/api/account/login");
     }
+
 
 }

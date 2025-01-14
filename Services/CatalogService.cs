@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Mise.Dtos;
 using Mise.Entities;
 using Mise.Errors;
@@ -15,7 +16,7 @@ public class CatalogService
         _tagsService = tagsService;
     }
 
-    public async Task<OneOf<ProductDto, Error>> CreateProductWithTags(CreateProductDto createProductDto)
+    public async Task<OneOf<ProductDto, Error>> CreateProductWithTags(CreateProductDto createProductDto, int userId)
     {
         var resultTags = await _tagsService.GetMultipleTagsByNameAsync(createProductDto.TagsNames);
         if (resultTags.IsT1)
@@ -24,7 +25,7 @@ public class CatalogService
 
             return err;
         }
-        var resultProduct = await _productsService.CreateProduct(createProductDto, resultTags.AsT0);
+        var resultProduct = await _productsService.CreateProduct(createProductDto, resultTags.AsT0, userId);
         if (resultProduct.IsT1)
         {
             var err = resultProduct.AsT1;
@@ -49,5 +50,6 @@ public class CatalogService
     public async Task<OneOf<List<ProductDto>, NotFoundProductError>> GetProductsByTagAsync(string[] tags) => await _productsService.GetProductsByTags(tags);
 
     public async Task<List<ProductDetailsDto>> GetAllProductsAsync() => await _productsService.GetAllProductsAsync();
+    public async Task<OneOf<TagDetailsDto, AlreadyExistingTagsError>> CreateTagsAsync(CreateTagDTO createTagsDTO, int userId) => await _tagsService.CreateMultpleTagsAsync(createTagsDTO, userId);
 
 }

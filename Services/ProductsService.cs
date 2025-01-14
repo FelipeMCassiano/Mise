@@ -1,5 +1,6 @@
 using System.Formats.Tar;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using Mise.Database;
 using Mise.Dtos;
 using Mise.Entities;
@@ -19,7 +20,7 @@ public class ProductsService
 
 
     public async Task<OneOf<ProductDto, Error>> CreateProduct(CreateProductDto createProductDto,
-                                                              List<Tag> tags)
+                                                              List<Tag> tags, int userId)
     {
         try
         {
@@ -29,7 +30,8 @@ public class ProductsService
                 Id = id,
                 Name = createProductDto.Name,
                 Price = createProductDto.Price,
-                Tags = tags
+                Tags = tags,
+                UserId = userId
             };
 
             await _dbContext.Products.AddAsync(product);

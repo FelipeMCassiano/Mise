@@ -14,11 +14,13 @@ public class ErrorHandler : IErrorHandler
         IActionResult actionResult = error.ErrorType switch
         {
             ErrorType.CreateProductError =>
-                ServerError(error),
+                CreateProductError(error),
             ErrorType.NotFoundProduct =>
             NotFoundError(error),
             ErrorType.NotFoundTag =>
                NotFoundError(error),
+            ErrorType.AlreadyExistingTags =>
+            AlreadyExistsTagError(error),
             _ =>
                  ServerError(error)
 
@@ -57,12 +59,31 @@ public class ErrorHandler : IErrorHandler
 
 
     }
-
-
     private IActionResult CreateProductError(Error error)
     {
-        if (error.ErrorType == ErrorType.CreateProductError) {; }
-        throw new NotImplementedException();
+        return new ObjectResult(new
+        {
+            status = "error",
+            message = error.Message,
+            errorType = error.ErrorType.ToString()
+
+        })
+        {
+            StatusCode = StatusCodes.Status500InternalServerError
+        };
+    }
+    private IActionResult AlreadyExistsTagError(Error error)
+    {
+        return new ObjectResult(new
+        {
+            status = "error",
+            message = error.Message,
+            errorType = error.ErrorType.ToString()
+
+        })
+        {
+            StatusCode = StatusCodes.Status400BadRequest
+        };
     }
 
 }
